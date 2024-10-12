@@ -144,6 +144,7 @@ class FolderSynchronization:
 
         self.sync_add_replica()
         self.sync_delete_replica()
+        time.sleep(1)
         self.sync_update_replica()
         
 
