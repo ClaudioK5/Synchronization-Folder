@@ -125,7 +125,7 @@ class FolderSynchronization:
             
             corresponding_item = replica_folder / item.name
             
-            if item.is_file():
+            if corresponding_item.exists() and item.is_file():
                 
                 if self.md5(item) != self.md5(corresponding_item):
                     
@@ -133,7 +133,7 @@ class FolderSynchronization:
                     self.log_action(f"File '{item.name}' has been updated in {self.replica_folder}.")
                     print(f"File '{item.name}' has been updated in {self.replica_folder}.")
              
-            elif item.is_dir():
+            elif corresponding_item.exists() and item.is_dir():
                 
                 self.sync_update_replica(item,corresponding_item)
 
