@@ -59,24 +59,42 @@ class FolderSynchronization:
             if not corresponding_item.exists():
                 
                 if item.is_file():
+
+                    try:
                     
-                    item.unlink()
+                       item.unlink()
                     
-                    self.log_action(f"File '{item.name}' has been deleted from {self.replica_folder}")
+                       self.log_action(f"File '{item.name}' has been deleted from {self.replica_folder}")
                     
-                    print(f"File '{item.name}' has been deleted from {self.replica_folder}.")
+                       print(f"File '{item.name}' has been deleted from {self.replica_folder}.")
+
+                    except Exception as e:
+                        
+                       self.log_action(f"An error occurred with '{item.name}': {str(e)}")
                 
                 elif item.is_dir():
+
+                    try:
                     
-                    shutil.rmtree(item)
+                       shutil.rmtree(item)
                     
-                    self.log_action(f"Directory '{item.name}' has been deleted from {self.replica_folder}")
+                       self.log_action(f"Directory '{item.name}' has been deleted from {self.replica_folder}")
                     
-                    print(f"Directory '{item.name}' has been deleted from {self.replica_folder}.")
+                       print(f"Directory '{item.name}' has been deleted from {self.replica_folder}.")
+
+                    except Exception as e:
+
+                        self.log_action(f"An error occurred with '{item.name}': {str(e)}")
          
             elif corresponding_item.exists() and item.is_dir():
+
+                try:
                 
-                self.sync_delete_replica(corresponding_item,item)
+                   self.sync_delete_replica(corresponding_item,item)
+
+                except Exception as e:
+                   
+                   self.log_action(f"An error occurred with '{item.name}': {str(e)}")
     
     #the method down below assures that if a file or a directory assures
     #that if a file or a directory is added in the source folder, it will be copied in the
@@ -94,23 +112,42 @@ class FolderSynchronization:
             if not corresponding_item.exists():
                 
                 if item.is_file():
+
+                    try:
                     
-                    shutil.copy2(item, corresponding_item)
-                    self.log_action(f"File '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}.")
-                    print(f"File '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}")
+                       shutil.copy2(item, corresponding_item)
+                       self.log_action(f"File '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}.")
+                       print(f"File '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}")
                 
+                    except Exception as e:
+                        
+                       self.log_action(f"An error occurred with '{item.name}': {str(e)}")
+
                 elif item.is_dir():
                     
                     #shutil.copytree(item, corresponding_item)
-                    corresponding_item.mkdir(parents=True, exist_ok=True)
-                    self.log_action(f"Directory '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}")
-                    print(f"Directory '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}")
-                    self.sync_add_replica(item,corresponding_item)
+
+                    try:
+                    
+                       corresponding_item.mkdir(parents=True, exist_ok=True)
+                       self.log_action(f"Directory '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}")
+                       print(f"Directory '{item.name}' has been copied from {self.source_folder} to {self.replica_folder}")
+                       self.sync_add_replica(item,corresponding_item)
+
+                    except Exception as e:
+                        
+                       self.log_action(f"An error occurred with '{item.name}': {str(e)}")
             
             
             elif corresponding_item.exists() and item.is_dir():
+
+                try:
                 
-                self.sync_add_replica(item,corresponding_item)
+                   self.sync_add_replica(item,corresponding_item)
+
+                except Exception as e:
+                        
+                   self.log_action(f"An error occurred with '{item.name}': {str(e)}")
 
 
     #the method below synchronizes the two folder assuring an updated file
@@ -128,14 +165,27 @@ class FolderSynchronization:
             if corresponding_item.exists() and item.is_file():
                 
                 if self.md5(item) != self.md5(corresponding_item):
+
+                    try:
                     
-                    shutil.copy2(item,corresponding_item)
-                    self.log_action(f"File '{item.name}' has been updated in {self.replica_folder}.")
-                    print(f"File '{item.name}' has been updated in {self.replica_folder}.")
+                       shutil.copy2(item,corresponding_item)
+                       self.log_action(f"File '{item.name}' has been updated in {self.replica_folder}.")
+                       print(f"File '{item.name}' has been updated in {self.replica_folder}.")
+                    
+                    except Exception as e:
+                        
+                       self.log_action(f"An error occurred with '{item.name}': {str(e)}")
+            
              
             elif corresponding_item.exists() and item.is_dir():
+
+                try:
                 
-                self.sync_update_replica(item,corresponding_item)
+                   self.sync_update_replica(item,corresponding_item)
+
+                except Exception as e:
+                        
+                   self.log_action(f"An error occurred with '{item.name}': {str(e)}")
 
 
 
@@ -176,5 +226,3 @@ if __name__ == "__main__":
     synchronization = FolderSynchronization(args.source_folder, args.replica_folder, args.log_folder, args.interval)
 
     synchronization.run()
-    
-               
